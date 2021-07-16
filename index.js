@@ -3,7 +3,7 @@ const app = express()
 
 
 const {graphqlHTTP} = require('express-graphql')
-// const MongoClient = require('mongodb').MongoClient
+const MongoClient = require('mongodb').MongoClient
 
 const schema = require("./schema")
 const root = require("./root")
@@ -25,18 +25,26 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
+
   console.log(`Example app listening at http://localhost:${port}`)
+
+  MongoClient.connect('mongodb://localhost:27017/', { useUnifiedTopology: true },  (err, client) => {
+  if (err) throw err
+
+  const db = client.db('animals')
+
+  global.DB = db.collection("inventory")
+
+  console.log("connected to animals")
+
+  // db.collection('mammals').find().toArray(function (err, result) {
+  //   if (err) throw err
+
+  //   console.log(result)
+  // })
+})
+
+ 
 })
 
 
-// MongoClient.connect('mongodb://localhost:27017/animals', function (err, client) {
-//   if (err) throw err
-
-//   var db = client.db('animals')
-
-//   db.collection('mammals').find().toArray(function (err, result) {
-//     if (err) throw err
-
-//     console.log(result)
-//   })
-// })
